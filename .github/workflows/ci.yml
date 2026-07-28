@@ -1,0 +1,16 @@
+# .github/workflows/ci.yml
+name: ci
+on: { push: { branches: [main] }, pull_request: }
+permissions: { contents: read }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with: { python-version: "3.11" }
+      - run: uv sync --extra dev
+      - run: uv run ruff check .
+      - run: uv run mypy src/docdrift
+      - run: uv run python -m pytest -q
+      - run: uv run docdrift check            # dogfood

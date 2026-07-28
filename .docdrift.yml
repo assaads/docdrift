@@ -1,0 +1,10 @@
+# .docdrift.yml
+# docdrift dogfoods on its own README: every `docdrift <command>` must appear in README.md.
+version: 1
+docs: [README.md]
+sources:
+  - name: docdrift-cli
+    extractor: typer
+    module: docdrift.cli
+    app: app
+    format: "docdrift {item}"
