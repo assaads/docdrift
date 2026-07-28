@@ -1,12 +1,11 @@
 import importlib
 from pathlib import Path
 
+import docdrift.extractors  # noqa: F401  (ensure registration import ran)
+import docdrift.extractors.python.typer_ext  # noqa: F401
 from docdrift.ctx import make_ctx
 from docdrift.manifest import Source
 from docdrift.registry import ExtractorRegistry
-
-import docdrift.extractors  # noqa: F401  (ensure registration import ran)
-import docdrift.extractors.python.typer_ext  # noqa: F401
 
 
 def test_typer_extractor_lists_commands():

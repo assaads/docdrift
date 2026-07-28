@@ -1,6 +1,6 @@
 import pytest
 
-from docdrift.ctx import Context, make_ctx
+from docdrift.ctx import make_ctx
 from docdrift.extractors.base import Extractor
 from docdrift.registry import ExtractorRegistry, UnknownExtractor, register
 

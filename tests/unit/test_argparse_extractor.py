@@ -1,10 +1,9 @@
 from pathlib import Path
 
+import docdrift.extractors.python.argparse_ext  # noqa: F401
 from docdrift.ctx import make_ctx
 from docdrift.manifest import Source
 from docdrift.registry import ExtractorRegistry
-
-import docdrift.extractors.python.argparse_ext  # noqa: F401
 
 
 def test_argparse_extractor_lists_subcommands():

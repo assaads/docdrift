@@ -26,7 +26,7 @@ _TEMPLATES = {
 
 @app.command()
 def check(
-    config: list[Path] = typer.Option([".docdrift.yml"], "--config"),
+    config: list[Path] = typer.Option([".docdrift.yml"], "--config"),  # noqa: B008
     json_output: bool = typer.Option(False, "--json"),
 ) -> None:
     """Fail (exit 1) if any source's surface is missing from the docs."""
@@ -48,7 +48,7 @@ def init(
 
 @app.command(name="list")
 def list_cmd(
-    config: Path = typer.Option(Path(".docdrift.yml"), "--config"),
+    config: Path = typer.Option(Path(".docdrift.yml"), "--config"),  # noqa: B008
 ) -> None:
     """Print the extracted surface per source (debug aid; never exits non-zero)."""
     manifest = config_mod.load_first([config])

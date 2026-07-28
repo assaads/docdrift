@@ -1,11 +1,10 @@
 import re  # noqa: F401
 from pathlib import Path
 
+import docdrift.extractors.generic.files_ext  # noqa: F401
 from docdrift.ctx import make_ctx
 from docdrift.manifest import Source
 from docdrift.registry import ExtractorRegistry
-
-import docdrift.extractors.generic.files_ext  # noqa: F401
 
 REPO = Path(__file__).parent.parent / "fixtures" / "files_repo"
 

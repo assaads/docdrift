@@ -18,7 +18,7 @@ def run(manifest: Manifest, ctx: Context) -> DriftReport:
             (ctx.repo_root / p).read_text(encoding="utf-8", errors="replace")
             for p in doc_paths
         )
-        missing = sorted(l for l in literals if l not in docs_text)
+        missing = sorted(lit for lit in literals if lit not in docs_text)
         report.add(SourceReport(
             name=src.name or src.extractor, extractor=src.extractor,
             items=items, literals=literals, missing=missing, docs=doc_paths,

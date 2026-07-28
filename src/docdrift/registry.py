@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Type
+from collections.abc import Callable
 
 
 class UnknownExtractor(KeyError):
@@ -8,11 +8,11 @@ class UnknownExtractor(KeyError):
 
 
 class ExtractorRegistry:
-    _by_name: dict[str, Type] = {}
+    _by_name: dict[str, type] = {}
 
     @classmethod
-    def register(cls, name: str) -> Callable[[Type], Type]:
-        def wrap(ext_cls: Type) -> Type:
+    def register(cls, name: str) -> Callable[[type], type]:
+        def wrap(ext_cls: type) -> type:
             assert hasattr(ext_cls, "extract"), f"{ext_cls} must implement extract()"
             ext_cls.name = name  # type: ignore[attr-defined]
             cls._by_name[name] = ext_cls
@@ -34,5 +34,5 @@ class ExtractorRegistry:
 
 
 # Convenience module-level decorator.
-def register(name: str) -> Callable[[Type], Type]:
+def register(name: str) -> Callable[[type], type]:
     return ExtractorRegistry.register(name)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import glob
 import re
-from typing import Any
+from typing import Any, cast
 
 from docdrift.ctx import Context
 from docdrift.registry import register
@@ -12,7 +12,7 @@ class _FilesLikeExtractor:
     """Glob files; optionally apply a regex (group 1 = item). Else item = file stem."""
 
     def extract(self, source: Any, ctx: Context) -> set[str]:
-        pattern = getattr(source, "path", None) or getattr(source, "pattern", "")
+        pattern: str = cast(str, getattr(source, "path", None) or getattr(source, "pattern", ""))
         files = glob.glob(pattern, recursive=True, root_dir=str(ctx.repo_root))
         rx = getattr(source, "regex", None)
         compiled = re.compile(rx, re.MULTILINE) if rx else None

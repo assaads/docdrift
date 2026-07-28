@@ -1,10 +1,9 @@
 from pathlib import Path
 
+import docdrift.extractors.python.click_ext  # noqa: F401
 from docdrift.ctx import make_ctx
 from docdrift.manifest import Source
 from docdrift.registry import ExtractorRegistry
-
-import docdrift.extractors.python.click_ext  # noqa: F401
 
 
 def test_click_extractor_lists_commands():
