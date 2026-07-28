@@ -1,0 +1,23 @@
+# .github/workflows/docs-drift.yml
+name: docs-drift
+on:
+  workflow_call:
+    inputs:
+      config:         { type: string, default: ".docdrift.yml" }
+      python-version: { type: string, default: "3.11" }
+      ref:            { type: string, default: "v0.1" }
+
+permissions: { contents: read }
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ inputs.python-version }}" }
+      - uses: astral-sh/setup-uv@v4
+      - name: docdrift check
+        run: >
+          uvx --from "git+https://github.com/assaads/docdrift@${{ inputs.ref }}"
+          docdrift check --config "${{ inputs.config }}"

@@ -1,0 +1,17 @@
+# skills/docs-drift-guard/fallback-workflow.yml
+# Written verbatim into a consumer repo's .github/workflows/docs-drift.yml by the skill
+# when assaads/docdrift does not exist yet (manual repo prerequisite). Pinned to @main
+# until the shared repo is created and tagged v0.1; the skill upgrades to the reusable
+# `uses:` form once the repo exists.
+name: docs-drift
+on: [push, pull_request]
+permissions: { contents: read }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: astral-sh/setup-uv@v4
+      - run: uvx --from "git+https://github.com/assaads/docdrift@main" docdrift check
