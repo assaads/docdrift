@@ -28,6 +28,6 @@ class ArgparseExtractor:
             sys.path.insert(0, root)
         factory = source.factory
         module = factory.partition(":")[0]
-        sys.modules.pop(module, None)  # fixtures share module name 'app' across stacks
+        sys.modules.pop(module, None)  # invalidate stale module cache (same name imported from a different root in a prior call)
         parser = ctx.importer(factory)()
         return _walk(parser)

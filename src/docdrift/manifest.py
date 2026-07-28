@@ -6,7 +6,7 @@ are read by the matching extractor. Adding an extractor never changes this model
 """
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Source(BaseModel):
@@ -15,6 +15,13 @@ class Source(BaseModel):
     name: str | None = None
     docs: list[str] = Field(default_factory=list)   # empty => inherit Manifest.docs
     format: str = "{item}"                           # {item} = a surface element
+
+    @field_validator("format")
+    @classmethod
+    def _format_must_reference_item(cls, v: str) -> str:
+        if "{item}" not in v:
+            raise ValueError("format must contain '{item}' (the surface element placeholder)")
+        return v
 
 
 class Manifest(BaseModel):

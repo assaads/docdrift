@@ -23,3 +23,10 @@ def test_rejects_wrong_version(tmp_path: Path):
     f.write_text("version: 2\nsources: []\n")
     with pytest.raises(config.DocdriftConfigError):
         config.load_first([f])
+
+
+def test_rejects_non_dict_yaml(tmp_path: Path):
+    f = tmp_path / ".docdrift.yml"
+    f.write_text("- just\n- a\n- list\n")
+    with pytest.raises(config.DocdriftConfigError):
+        config.load_first([f])

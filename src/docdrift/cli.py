@@ -16,10 +16,25 @@ _TEMPLATES = {
         "  - name: cli\n    extractor: typer\n    module: PKG.cli\n    app: app\n"
         "    format: 'PROG {item}'\n"
     ),
+    "click": (
+        "version: 1\ndocs: [README.md]\nsources:\n"
+        "  - name: cli\n    extractor: click\n    obj: PKG.cli:group\n"
+        "    format: 'PROG {item}'\n"
+    ),
+    "argparse": (
+        "version: 1\ndocs: [README.md]\nsources:\n"
+        "  - name: cli\n    extractor: argparse\n    factory: PKG.cli:build_parser\n"
+        "    format: 'PROG {item}'\n"
+    ),
     "files": (
         "version: 1\ndocs: [README.md]\nsources:\n"
         "  - name: files\n    extractor: files\n    path: 'src/**/*.py'\n"
         "    format: '{item}'\n"
+    ),
+    "regex": (
+        "version: 1\ndocs: [README.md]\nsources:\n"
+        "  - name: fns\n    extractor: regex\n    path: 'src/cli.py'\n"
+        "    regex: '^def (\\w+)\\b'\n    format: 'PROG {item}'\n"
     ),
 }
 
@@ -39,10 +54,16 @@ def check(
 @app.command()
 def init(
     stack: str = typer.Option("files", "--stack", help="typer|click|argparse|files|regex"),
+    force: bool = typer.Option(False, "--force", help="overwrite an existing .docdrift.yml"),
 ) -> None:
     """Write a starter .docdrift.yml for the given stack."""
-    tmpl = _TEMPLATES.get(stack, _TEMPLATES["files"])
-    Path(".docdrift.yml").write_text(tmpl, encoding="utf-8")
+    tmpl = _TEMPLATES.get(stack)
+    if tmpl is None:
+        raise typer.BadParameter(f"unknown stack {stack!r}; choose from {sorted(_TEMPLATES)}")
+    target = Path(".docdrift.yml")
+    if target.exists() and not force:
+        raise typer.BadParameter(".docdrift.yml already exists — pass --force to overwrite")
+    target.write_text(tmpl, encoding="utf-8")
     typer.echo(f"wrote .docdrift.yml (stack={stack}) — edit PKG/PROG/path then run `docdrift check`")
 
 

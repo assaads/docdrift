@@ -36,3 +36,18 @@ def test_list_prints_surface(tmp_path: Path, monkeypatch) -> None:
     result = runner.invoke(app, ["list"])
     assert result.exit_code == 0, result.output
     assert "init" in result.output and "push" in result.output
+
+
+def test_init_writes_click_template(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["init", "--stack", "click"])
+    assert result.exit_code == 0, result.output
+    assert "extractor: click" in (tmp_path / ".docdrift.yml").read_text()
+
+
+def test_init_refuses_overwrite_without_force(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / ".docdrift.yml").write_text("hand-edited\n")
+    result = runner.invoke(app, ["init", "--stack", "typer"])
+    assert result.exit_code != 0
+    assert "hand-edited" in (tmp_path / ".docdrift.yml").read_text()  # not overwritten

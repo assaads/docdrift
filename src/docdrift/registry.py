@@ -13,7 +13,8 @@ class ExtractorRegistry:
     @classmethod
     def register(cls, name: str) -> Callable[[type], type]:
         def wrap(ext_cls: type) -> type:
-            assert hasattr(ext_cls, "extract"), f"{ext_cls} must implement extract()"
+            if not hasattr(ext_cls, "extract"):
+                raise TypeError(f"{ext_cls} must implement extract()")
             ext_cls.name = name  # type: ignore[attr-defined]
             cls._by_name[name] = ext_cls
             return ext_cls

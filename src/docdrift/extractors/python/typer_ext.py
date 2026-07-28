@@ -16,7 +16,7 @@ class TyperExtractor:
         if root not in sys.path:
             sys.path.insert(0, root)
         module = source.module
-        sys.modules.pop(module, None)  # fixtures share module name 'app' across stacks
+        sys.modules.pop(module, None)  # invalidate stale module cache (same name imported from a different root in a prior call)
         dotted = f"{module}:{getattr(source, 'app', 'app')}"
         app = ctx.importer(dotted)
         from typer.main import get_group

@@ -13,6 +13,10 @@ class DocdriftConfigError(ValueError):
 
 def load(path: Path) -> Manifest:
     raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(raw, dict):
+        raise DocdriftConfigError(
+            f"manifest must be a mapping, got {type(raw).__name__}"
+        )
     if raw.get("version") != 1:
         raise DocdriftConfigError(
             f"unsupported/missing manifest version: {raw.get('version')!r} "

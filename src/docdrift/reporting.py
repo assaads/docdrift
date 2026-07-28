@@ -12,6 +12,7 @@ class SourceReport:
     literals: list[str]
     missing: list[str]
     docs: list[str]
+    missing_docs: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -22,15 +23,19 @@ class DriftReport:
         self.sources.append(sr)
 
     def has_drift(self) -> bool:
-        return any(sr.missing for sr in self.sources)
+        return any(sr.missing or sr.missing_docs for sr in self.sources)
 
     def render_summary(self) -> str:
-        lines = []
+        if not self.sources:
+            return "docs-drift: WARNING — manifest has no sources (nothing to check)"
+        lines: list[str] = []
         for sr in self.sources:
+            if sr.missing_docs:
+                lines.append(f"[{sr.name}] missing doc files: {sr.missing_docs}")
             if sr.missing:
-                lines.append(
-                    f"[{sr.name}] docs {sr.docs} missing: {sr.missing}"
-                )
+                lines.append(f"[{sr.name}] docs {sr.docs} missing: {sr.missing}")
+            if not sr.items and not sr.missing and not sr.missing_docs:
+                lines.append(f"[{sr.name}] WARNING: extractor '{sr.extractor}' returned 0 items")
         if not lines:
             return "docs-drift: OK (no drift)"
         return "docs-drift: DRIFT DETECTED\n" + "\n".join(lines)

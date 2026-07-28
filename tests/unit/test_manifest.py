@@ -1,3 +1,6 @@
+import pytest
+from pydantic import ValidationError
+
 from docdrift.manifest import Manifest, Source
 
 
@@ -24,3 +27,8 @@ def test_source_default_docs_and_format():
     src = Source(extractor="files")
     assert src.docs == []
     assert src.format == "{item}"
+
+
+def test_source_rejects_format_without_item():
+    with pytest.raises(ValidationError):
+        Source(extractor="files", format="nope")
