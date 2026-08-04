@@ -22,7 +22,7 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@a02a34c4d6254f0d9e4b2facf46929c2f8ea58f7 # v4
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           release-type: python
           # Plain v0.1.0 tags (not docdrift-v0.1.0) — matches the v0.1 moving tag consumers pin.
