@@ -1,0 +1,29 @@
+# .github/workflows/release-please.yml
+# Auto-cut releases via Conventional Commits.
+#
+# Why an explicit permissions block: release-please creates a release PR and
+# (on merge) pushes a tag. That needs contents:write + pull-requests:write.
+# Declaring it here makes the workflow self-contained — it does NOT rely on the
+# repo-wide default_workflow_permissions being "write". The repo-level toggle
+# "Allow GitHub Actions to create and approve pull requests" must still be ON
+# (see https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository).
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+# Explicit per-workflow permissions — scoped, overrides repo default.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@a02a34c4d6254f0d9e4b2facf46929c2f8ea58f7 # v4
+        with:
+          release-type: python
+          # Plain v0.1.0 tags (not docdrift-v0.1.0) — matches the v0.1 moving tag consumers pin.
+          include-component-in-tag: false
