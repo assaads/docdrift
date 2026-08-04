@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from docdrift.ctx import Context
+from docdrift.ctx import Context, ensure_importable
 from docdrift.registry import register
 
 
@@ -12,10 +12,8 @@ class TyperExtractor:
     name = "typer"
 
     def extract(self, source: Any, ctx: Context) -> set[str]:
-        root = str(ctx.repo_root)
-        if root not in sys.path:
-            sys.path.insert(0, root)
         module = source.module
+        ensure_importable(module, ctx.repo_root)
         sys.modules.pop(module, None)  # invalidate stale module cache (same name imported from a different root in a prior call)
         dotted = f"{module}:{getattr(source, 'app', 'app')}"
         app = ctx.importer(dotted)

@@ -4,7 +4,7 @@ import argparse
 import sys
 from typing import Any
 
-from docdrift.ctx import Context
+from docdrift.ctx import Context, ensure_importable
 from docdrift.registry import register
 
 
@@ -23,11 +23,9 @@ class ArgparseExtractor:
     name = "argparse"
 
     def extract(self, source: Any, ctx: Context) -> set[str]:
-        root = str(ctx.repo_root)
-        if root not in sys.path:
-            sys.path.insert(0, root)
         factory = source.factory
         module = factory.partition(":")[0]
+        ensure_importable(module, ctx.repo_root)
         sys.modules.pop(module, None)  # invalidate stale module cache (same name imported from a different root in a prior call)
         parser = ctx.importer(factory)()
         return _walk(parser)
