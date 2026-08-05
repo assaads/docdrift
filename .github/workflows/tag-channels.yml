@@ -1,0 +1,28 @@
+# .github/workflows/tag-channels.yml
+# Advance moving "channel" tags (vMAJOR, vMAJOR.MINOR) to point at the latest
+# vX.Y.Z release tag created by release-please. Eliminates the manual
+# "remember to move v0.1 after each release" step — consumers pinned to a
+# moving tag (v0, v0.1) automatically track the newest matching release.
+#
+# Trigger: the `create` event fires when release-please pushes a git tag
+# named vX.Y.Z. We filter to semver tags only.
+name: tag-channels
+
+on:
+  create:
+    # fires for refs/tags/* — refined by the `starts with v` guard in-job
+
+permissions:
+  contents: write   # needed to force-update moving refs
+
+jobs:
+  advance-channels:
+    # Only run for version tags created on the default branch's release commit.
+    if: ${{ github.event.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need full history to compare/verify tags
+      - name: Advance moving channel tags
+        run: .github/scripts/advance-tag-channels.sh "${{ github.ref_name }}"
